@@ -31,9 +31,6 @@ public class Usuario implements UserDetails {
     @Min(value = 4 ,message = "debe tener al menos 4 caracteres")
     private String password;
 
-    @JoinTable()
-    private Set<Amigo> lista_amigos = new HashSet<>();
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Set.of();
