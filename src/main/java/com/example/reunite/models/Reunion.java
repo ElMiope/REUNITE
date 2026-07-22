@@ -1,21 +1,24 @@
 package com.example.reunite.models;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Time;
+import java.util.Date;
+
 @Getter @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @ToString
 @Entity
-@Table(name = "usuarios")
-public class Usuario {
+@Table(name = "reuniones")
+public class Reunion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long usuario_id;
+    private Long reunion_id;
     private String nombre;
-    private String email;
-    private String password;
+    private Date fecha;
+    private Time hora;
+    private String ubicacion;
 }
