@@ -1,6 +1,6 @@
 package com.example.reunite.enums;
 
-public enum Unidad {
+public enum EUnidad {
     KGS,
     GRS,
     LTRS,

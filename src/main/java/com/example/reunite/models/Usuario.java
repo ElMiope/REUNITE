@@ -1,6 +1,7 @@
 package com.example.reunite.models;
 
 
+import com.example.reunite.models.security.Rol;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -19,6 +20,7 @@ import java.util.Set;
 @Builder
 @ToString
 @Entity
+@Table(name = "usuarios")
 public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +28,10 @@ public class Usuario implements UserDetails {
     @Column(unique = true)
     @NotBlank
     private String username;
-    @Email(message = "fomato invalido")
+    @Column(unique = true)
+    @Email(message = "Fomato invalido")
     private String email;
-    @Min(value = 4 ,message = "debe tener al menos 4 caracteres")
+    @Min(value = 4 ,message = "La contraseña debe tener al menos 4 caracteres")
     private String password;
 
     @Override
@@ -54,4 +57,8 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinTable(name="usuarios_roles",joinColumns = @JoinColumn(name="usuario_id"),inverseJoinColumns = @JoinColumn(name="rol_id"))
+    private Set<Rol> roles = new HashSet<>();
 }

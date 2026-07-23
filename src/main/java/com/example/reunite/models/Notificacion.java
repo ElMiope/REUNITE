@@ -1,6 +1,6 @@
 package com.example.reunite.models;
 
-import com.example.reunite.enums.TipoNotificacion;
+import com.example.reunite.enums.ETipoNotificacion;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +22,6 @@ public class Notificacion {
     private Usuario usuario_receptor;
     private String mensaje;
     @Enumerated(EnumType.STRING)
-    private TipoNotificacion tipoNotificacion;
+    private ETipoNotificacion tipoNotificacion;
     private LocalDateTime fecha_creacion;
 }

@@ -1,6 +1,6 @@
 package com.example.reunite.models;
 
-import com.example.reunite.enums.Unidad;
+import com.example.reunite.enums.EUnidad;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.Pair;
@@ -16,7 +16,11 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long item_id;
     private String nombre;
-    private Pair<Double, Unidad> cantidad;
+    @Embedded // Le indica a JPA que este objeto forma parte de la tabla de la entidad
+    @AttributeOverride(name = "left", column = @Column(name = "cantidad"))
+    @AttributeOverride(name = "right", column = @Column(name = "unidad"))
+    @Enumerated(EnumType.STRING)
+    private Pair<Double, EUnidad> cantidad;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
