@@ -23,8 +23,8 @@ public class Reunion {
     private Time hora;
     private String ubicacion;
     @ManyToOne
-    @JoinColumn(name = "organizador_id")
-    private Organizador creador;
+    @JoinColumn(name = "usuario_id")
+    private Usuario creador;
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name="invitados_reuniones", joinColumns = @JoinColumn(name="reunion_id"),inverseJoinColumns = @JoinColumn(name="user_id"))
