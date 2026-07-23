@@ -23,7 +23,7 @@ public class UsuarioService implements UserDetailsService {
     private UsuarioDTO buscarUsuario(String username){
         return usuarioRepository.findByUsernameEqualsIgnoreCase(username).map(Mapper::toDTO).orElse(null);
     }
-    private UsuarioDTO crear(Usuario usuario){
+    public UsuarioDTO crear(Usuario usuario){
         UsuarioDTO uDto = buscarUsuario(usuario.getUsername());
         if(uDto != null) throw new RepeatedEntityException("El usuario ingresado ya existe");
         Usuario u = usuarioRepository.save(usuario);
