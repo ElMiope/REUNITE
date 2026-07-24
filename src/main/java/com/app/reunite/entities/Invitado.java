@@ -10,14 +10,12 @@ import lombok.*;
 @Builder
 @ToString
 @Entity
-@Table(name="items")
-public class Item {
+@Table(name="invitados")
+public class Invitado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long item_id;
-    private String nombre;
-    private String descripcion;
-    @ManyToOne
-    @JoinColumn(name = "usuario_asignado_id")
-    private Usuario usuario_asignado;
+    private Long invitado_id;
+    @OneToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 }

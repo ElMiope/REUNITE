@@ -13,20 +13,17 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 @Entity
-@Table(name="invitaciones")
-public class Invitacion {
+@Table(name="solicitudes")
+public class SolicitudAmistad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long invitacion_id;
+    private Long solicitud_id;
     @ManyToOne
     @JoinColumn(name = "emisor_id")
     private Usuario usuario_emisor;
     @ManyToOne
     @JoinColumn(name = "receptor_id")
-    private Usuario usuario_receptor;
-    @ManyToOne
-    @JoinColumn(name = "reunion_id")
-    private Reunion reunion;
+    private Usuario usuario_recptor;
     private Estado_Solicitud estado;
     private LocalDateTime fecha_envio;
     private LocalDateTime fecha_respuesta;
