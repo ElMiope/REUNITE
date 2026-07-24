@@ -1,0 +1,16 @@
+package com.app.reunite.enums;
+
+public enum Permiso {
+    // REUNIONES
+    CREAR_REUNIONES,
+    VISUALIZAR_REUNIONES,
+    MODIFICAR_REUNION,
+    //ITEMS
+    CREAR_ITEMS,
+    VISUALIZAR_ITEMS,
+    MODIFICAR_ITEMS,
+    ELIMINAR_ITEMS,
+    ASIGNAR_ITEM,
+    //INVITACION
+    ENVIAR_INVITACION
+}
