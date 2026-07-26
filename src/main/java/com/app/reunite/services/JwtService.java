@@ -21,6 +21,9 @@ public class JwtService {
     private static final String SECRET_KEY = "";
     @Value("${application.security.jwt.expiration}")
     private static final long TOKEN_EXPIRATION = 0;
+    @Value("${application.security.jwt.refresh.window}")
+    private static final long REFRESH_WINDOW = 0;
+
     public String generateToken(Map<String,Object> claims,String subject){
         return Jwts.builder()
                 .claims(claims)
@@ -66,6 +69,22 @@ public class JwtService {
         return getClaim(token,Claims::getSubject);
     }
     public String getAuthorities(String token){
-        return getClaim(token,c -> c.get("authorities", List.class));
+        return getClaim(token,c -> c.get("authorities", List.class)).toString();
     }
+    public Date getExpirationDate(String token){
+        return getClaim(token,Claims::getExpiration);
+    }
+    public boolean isTokenExpired(String token){
+        return getExpirationDate(token).before(new Date());
+    }
+    public boolean canBeTokenRenewed(String token){
+        return getExpirationDate(token).before(new Date(System.currentTimeMillis() + REFRESH_WINDOW));
+    }
+    public String renewToken(String token,UserDetails userDetails){
+        if(!canBeTokenRenewed(token)){
+            throw new RuntimeException("Token cannot be renewed");
+        }
+        return generateToken(userDetails);
+    }
+
 }
