@@ -2,6 +2,7 @@ package com.app.reunite.controllers;
 
 import com.app.reunite.entities.DTOs.LoginRequest;
 import com.app.reunite.entities.DTOs.LoginResponse;
+import com.app.reunite.entities.DTOs.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,10 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest login){
 
-        return ResponseEntity.ok();
+        return ResponseEntity.ok(null);
+    }
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> register(@RequestBody RegisterRequest register){
+
+        return ResponseEntity.ok(null);
     }
 }
