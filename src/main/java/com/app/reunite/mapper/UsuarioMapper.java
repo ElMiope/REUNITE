@@ -1,6 +1,7 @@
 package com.app.reunite.mapper;
 
 import com.app.reunite.entities.DTOs.RegisterRequest;
+import com.app.reunite.entities.DTOs.UsuarioDTO;
 import com.app.reunite.entities.Usuario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,6 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public abstract class UsuarioMapper {
     @Autowired
     protected PasswordEncoder passwordEncoder;
+
+    public static UsuarioDTO toDTO(Usuario usuario) {
+        return new UsuarioDTO(usuario.getUsername(),usuario.getEmail());
+    }
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", qualifiedByName = "encodePassword")
