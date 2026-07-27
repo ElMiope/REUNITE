@@ -18,11 +18,11 @@ import java.util.function.Function;
 @Service
 public class JwtService {
     @Value("${application.security.jwt.secret-key}")
-    private static final String SECRET_KEY = "";
+    private String SECRET_KEY;
     @Value("${application.security.jwt.expiration}")
-    private static final long TOKEN_EXPIRATION = 0;
+    private long TOKEN_EXPIRATION;
     @Value("${application.security.jwt.refresh.window}")
-    private static final long REFRESH_WINDOW = 0;
+    private long REFRESH_WINDOW;
 
     public String generateToken(Map<String,Object> claims,String subject){
         return Jwts.builder()
@@ -30,7 +30,7 @@ public class JwtService {
                 .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis()+TOKEN_EXPIRATION))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .signWith(getSignKey())
                 .compact();
     }
     public String generateToken(UserDetails userDetails){

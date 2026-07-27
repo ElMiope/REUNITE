@@ -1,6 +1,7 @@
 package com.app.reunite.security;
 
 import com.app.reunite.services.JwtService;
+import com.app.reunite.services.UsuarioService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,45 +22,56 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
-
     private final JwtService jwtService;
+    private final UsuarioService usuarioService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String authorization = request.getHeader("Authorization");
-        if(authorization==null || !authorization.startsWith("Bearer ")){
-            log.error("No token found");
-            filterChain.doFilter(request,response);
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
-        assert authorization != null;
+
         String token = authorization.substring(7);
+
+        String username;
+        try {
+            username = jwtService.getUsername(token);
+        } catch (RuntimeException e) {
+            log.error("Token JWT invalido: {}", e.getMessage());
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        UserDetails userDetails = usuarioService.loadUserByUsername(username);
 
         boolean isTokenExpired = jwtService.isTokenExpired(token);
         boolean canBeTokenRenewed = jwtService.canBeTokenRenewed(token);
-        if(isTokenExpired && !canBeTokenRenewed){
-            log.error("Token expired");
-            filterChain.doFilter(request,response);
+        if (isTokenExpired && canBeTokenRenewed) {
+            String renewedToken = jwtService.renewToken(token, userDetails);
+            response.setHeader("Authorization", "Bearer " + renewedToken);
+        } else if (isTokenExpired) {
+            log.error("Token expirado y fuera de ventana de renovacion");
+            filterChain.doFilter(request, response);
+            return;
         }
-        String username = jwtService.getUsername(token);
-        if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null){
-            log.info("Authenticated user: {}",username);
-            UserDetails userDetails = new UserDetails(username);
-            if(isTokenExpired && canBeTokenRenewed){
-                String renewedToken = jwtService.renewToken(token,userDetails);
-                response.setHeader("Authorization","Bearer " + renewedToken);
-            }
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            filterChain.doFilter(request,response);
-        } else{
-            log.error("Invalid Token or user already authenticated");
-            filterChain.doFilter(request,response);
-        }
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        log.info("Usuario autenticado: {}", username);
+        filterChain.doFilter(request, response);
     }
 }

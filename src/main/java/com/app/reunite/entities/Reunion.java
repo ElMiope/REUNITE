@@ -24,6 +24,7 @@ public class Reunion {
     @ManyToOne
     @JoinColumn(name="organizador_id")
     private Organizador organizador;
-    @JoinTable(name="invitados",joinColumns = @JoinColumn(name = "invidtado_id"),inverseJoinColumns = @JoinColumn(name="reunion_id"))
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name="reunion_id")
     private Set<Invitado> invitados;
 }
