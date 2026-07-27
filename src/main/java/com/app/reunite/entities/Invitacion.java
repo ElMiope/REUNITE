@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
 public class Invitacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long invitacion_id;
+    @JoinColumn(name="invitacion_id")
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "emisor_id")
     private Usuario usuario_emisor;

@@ -14,7 +14,7 @@ public abstract class UsuarioMapper {
     @Autowired
     protected PasswordEncoder passwordEncoder;
 
-    @Mapping(target = "usuario_id", ignore = true)
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", qualifiedByName = "encodePassword")
     @Mapping(target = "rol", expression = "java(com.app.reunite.enums.Rol.USUARIO)")
     public abstract Usuario toUsuario(RegisterRequest request);

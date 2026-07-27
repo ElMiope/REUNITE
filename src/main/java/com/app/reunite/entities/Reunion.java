@@ -16,7 +16,8 @@ import java.util.Set;
 public class Reunion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reunion_id;
+    @JoinColumn(name="reunion_id")
+    private Long id;
     private String nombre;
     private String descripcion;
     private String ubicacion;

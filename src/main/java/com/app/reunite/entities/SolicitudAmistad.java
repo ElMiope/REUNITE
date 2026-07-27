@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
 public class SolicitudAmistad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long solicitud_id;
+    @JoinColumn(name="solicitud_id")
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "emisor_id")
     private Usuario usuario_emisor;

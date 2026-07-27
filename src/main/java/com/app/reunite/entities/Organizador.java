@@ -1,5 +1,6 @@
 package com.app.reunite.entities;
 
+import com.app.reunite.enums.Rol;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,8 +14,10 @@ import lombok.*;
 public class Organizador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long organizador_id;
+    @JoinColumn(name="organizador_id")
+    private Long id;
     @OneToOne
     @JoinColumn(name="usuario_id")
     private Usuario usuario;
+    private Rol rol;
 }

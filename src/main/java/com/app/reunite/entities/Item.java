@@ -14,7 +14,8 @@ import lombok.*;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long item_id;
+    @JoinColumn(name="item_id")
+    private Long id;
     private String nombre;
     private String descripcion;
     @ManyToOne

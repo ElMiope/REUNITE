@@ -20,7 +20,8 @@ import java.util.List;
 public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long usuario_id;
+    @JoinColumn(name="usuario_id")
+    private Long id;
     @Column(unique = true, nullable = false)
     private String username;
     @Column(unique = true, nullable = false)

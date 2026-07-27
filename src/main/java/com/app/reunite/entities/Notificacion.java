@@ -1,5 +1,6 @@
 package com.app.reunite.entities;
 
+import com.app.reunite.enums.TipoNotificacion;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,9 +15,11 @@ import lombok.*;
 public class Notificacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long notificacion_id;
+    @JoinColumn(name="notificacion_id")
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
     private String mensaje;
+    private TipoNotificacion tipo;
 }
