@@ -45,15 +45,23 @@ public class SolicitudAmistadService {
         );
     }
 
-    public void cancelarSolicitud(Long id){
+    public Void cancelarSolicitud(Long id){
         solicitudAmistadRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Solicitud no encontrada"));
 
         solicitudAmistadRepository.deleteById(id);
     }
 
-    public List<SolicitudDTO> visualizarSolicitudes(String username){
+    public List<SolicitudDTO> visualizarSolicitudesRecibidas(String username){
         return solicitudAmistadRepository.findAll()
                 .stream().filter(solicitud -> solicitud.getUsuario_receptor()
+                        .getUsername()
+                        .equalsIgnoreCase(username))
+                .map(SolicitudMapper::toDTO)
+                .toList();
+    }
+    public List<SolicitudDTO> visualizarSolicitudesEnviadas(String username){
+        return solicitudAmistadRepository.findAll()
+                .stream().filter(solicitud -> solicitud.getUsuario_emisor()
                         .getUsername()
                         .equalsIgnoreCase(username))
                 .map(SolicitudMapper::toDTO)
