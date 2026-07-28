@@ -22,7 +22,8 @@ public class SolicitudController {
     }
     @DeleteMapping("/cancelar/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
-        return ResponseEntity.ok(solicitudAmistadService.cancelarSolicitud(id));
+        solicitudAmistadService.cancelarSolicitud(id);
+        return ResponseEntity.noContent().build();
     }
     @GetMapping("/mis-solicitudes-recibidas")
     public ResponseEntity<List<SolicitudDTO>> misSolicitudesRecibidas(@AuthenticationPrincipal Usuario usuario){

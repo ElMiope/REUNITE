@@ -45,7 +45,7 @@ public class SolicitudAmistadService {
         );
     }
 
-    public Void cancelarSolicitud(Long id){
+    public void cancelarSolicitud(Long id){
         solicitudAmistadRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Solicitud no encontrada"));
 
         solicitudAmistadRepository.deleteById(id);
