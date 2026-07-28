@@ -24,7 +24,7 @@ public class SolicitudAmistad {
     private Usuario usuario_emisor;
     @ManyToOne
     @JoinColumn(name = "receptor_id")
-    private Usuario usuario_recptor;
+    private Usuario usuario_receptor;
     private Estado_Solicitud estado;
     private LocalDateTime fecha_envio;
     private LocalDateTime fecha_respuesta;
