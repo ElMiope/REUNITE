@@ -7,7 +7,9 @@ import com.app.reunite.entities.Usuario;
 import com.app.reunite.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SolicitudMapper {
 
     @Autowired

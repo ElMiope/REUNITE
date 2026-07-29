@@ -8,6 +8,7 @@ import com.app.reunite.entities.Usuario;
 import com.app.reunite.enums.Rol;
 import com.app.reunite.mapper.UsuarioMapper;
 import com.app.reunite.repositories.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,6 +48,7 @@ public class UsuarioService implements UserDetailsService {
                 .orElseThrow(()-> new UsernameNotFoundException("Usuario " + username + " no encontrado")));
     }
 
+    @Transactional
     public LoginResponse register(RegisterRequest request){
         if(usuarioRepository.existsByUsername(request.username()))
             throw new IllegalArgumentException("El nombre de usuario ya esta registrado");

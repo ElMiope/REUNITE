@@ -8,6 +8,7 @@ import com.app.reunite.mapper.SolicitudMapper;
 import com.app.reunite.repositories.SolicitudAmistadRepository;
 import com.app.reunite.repositories.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class SolicitudAmistadService {
     private final SolicitudAmistadRepository solicitudAmistadRepository;
     private final UsuarioRepository usuarioRepository;
 
+    @Transactional
     public SolicitudDTO enviarSolicitud(String usernameEmisor,String usernameReceptor){
         Usuario emisor = usuarioRepository.findByUsername(usernameEmisor).orElseThrow(()->new UsernameNotFoundException("Usuario " + usernameReceptor + " no encontrado"));
         Usuario receptor = usuarioRepository.findByUsername(usernameReceptor).orElseThrow(()->new UsernameNotFoundException("Usuario " + usernameReceptor + " no encontrado"));
@@ -45,6 +47,7 @@ public class SolicitudAmistadService {
         );
     }
 
+    @Transactional
     public void cancelarSolicitud(Long id){
         solicitudAmistadRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Solicitud no encontrada"));
 
