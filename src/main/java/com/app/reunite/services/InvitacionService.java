@@ -33,6 +33,9 @@ public class InvitacionService {
 
         Reunion reunion = reunionService.buscarReunion(reunion_id);
 
+        if(!reunion.getOrganizador().getUsuario().equals(usuarioService.getAuthenticatedUser()))
+            throw new AuthorizationDeniedException("No tenes permiso para eliminar esta reunion, ya que no te corresponde");
+
         Invitacion invitacion = Invitacion.builder()
                 .usuario_emisor(emisor)
                 .usuario_receptor(receptor)
@@ -49,8 +52,11 @@ public class InvitacionService {
 
     @Transactional
     public void cancelarInvitacion(Long id){
-        invitacionRepository.findById(id)
+        Invitacion invitacion = invitacionRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("Invitacion no encontrada"));
+
+        if(!invitacion.getUsuario_emisor().equals(usuarioService.getAuthenticatedUser()))
+            throw new AuthorizationDeniedException("No tenes permiso para eliminar esta reunion, ya que no te corresponde");
 
         invitacionRepository.deleteById(id);
     }
@@ -63,6 +69,7 @@ public class InvitacionService {
 
         if(!invitacion.getUsuario_emisor().equals(usuario))
             throw new AuthorizationDeniedException("No tenes permiso de aceptar esta invitacion, debido a que no es una invitacion que te corresponda");
+
         invitacion.setEstado(Estado_Solicitud.ACEPTADA);
         invitacion.setFecha_respuesta(LocalDateTime.now());
 
@@ -84,6 +91,7 @@ public class InvitacionService {
 
         if(!invitacion.getUsuario_emisor().equals(usuario))
             throw new AuthorizationDeniedException("No tenes permiso de rechazar esta invitacion, debido a que no es una invitacion que te corresponda");
+
         invitacion.setEstado(Estado_Solicitud.RECHAZADA);
         invitacion.setFecha_respuesta(LocalDateTime.now());
 

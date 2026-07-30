@@ -34,4 +34,10 @@ public class ReunionController {
     public ResponseEntity<ReunionDTO> modificarReunion(@PathVariable Long id,@RequestBody ReunionRequest request){
         return ResponseEntity.ok(reunionService.modificarReunion(id,request));
     }
+
+    @DeleteMapping("/elimniar/{id}")
+    public ResponseEntity<Void> eliminarReunion(@PathVariable Long id){
+        reunionService.eliminarReunion(id);
+        return ResponseEntity.noContent().build();
+    }
 }

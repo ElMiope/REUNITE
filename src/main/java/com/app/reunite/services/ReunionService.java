@@ -12,6 +12,7 @@ import com.app.reunite.repositories.ReunionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -56,6 +57,8 @@ public class ReunionService {
     @Transactional
     public ReunionDTO modificarReunion(Long id, ReunionRequest request){
         Reunion reunion = buscarReunion(id);
+        if(!reunion.getOrganizador().getUsuario().equals(usuarioService.getAuthenticatedUser()))
+            throw new AuthorizationDeniedException("No tenes permiso para eliminar esta reunion, ya que no te corresponde");
         if(request.fechaHora().isBefore(LocalDateTime.now()))
             throw new IllegalArgumentException("La fecha/hora no puede ser anterior a la fecha/hora actual");
         reunion.setNombre(request.nombre());
@@ -104,10 +107,18 @@ public class ReunionService {
     @Transactional
     public void expulsarInvitado(Long reunionId,Invitado invitado){
         Reunion reunion = buscarReunion(reunionId);
+        if(!reunion.getOrganizador().getUsuario().equals(usuarioService.getAuthenticatedUser()))
+            throw new AuthorizationDeniedException("No tenes permiso para eliminar esta reunion, ya que no te corresponde");
         Set<Invitado> invitados = reunion.getInvitados();
         invitados.remove(invitado);
         reunion.setInvitados(invitados);
         reunionRepository.save(reunion);
     }
 
+    public void eliminarReunion(Long id) {
+        Reunion reunion = buscarReunion(id);
+        if(!reunion.getOrganizador().getUsuario().equals(usuarioService.getAuthenticatedUser()))
+            throw new AuthorizationDeniedException("No tenes permiso para eliminar esta reunion, ya que no te corresponde");
+        reunionRepository.delete(reunion);
+    }
 }

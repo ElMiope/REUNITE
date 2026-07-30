@@ -51,8 +51,11 @@ public class SolicitudAmistadService {
 
     @Transactional
     public void cancelarSolicitud(Long id){
-        solicitudAmistadRepository.findById(id)
+        SolicitudAmistad solicitudAmistad = solicitudAmistadRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("Solicitud no encontrada"));
+
+        if(!solicitudAmistad.getUsuario_emisor().equals(usuarioService.getAuthenticatedUser()))
+            throw new AuthorizationDeniedException("No tenes permiso para cancelar esta solicitud, ya que no te corresponde");
 
         solicitudAmistadRepository.deleteById(id);
     }
