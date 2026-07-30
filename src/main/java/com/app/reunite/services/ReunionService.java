@@ -26,6 +26,7 @@ public class ReunionService {
 
     private final ReunionRepository reunionRepository;
     private final UsuarioService usuarioService;
+    private final InvitadoService invitadoService;
 
     @Transactional
     public ReunionDTO crearReunion(ReunionRequest request){
@@ -105,14 +106,16 @@ public class ReunionService {
         reunionRepository.save(reunion);
     }
     @Transactional
-    public void expulsarInvitado(Long reunionId,Invitado invitado){
+    public String expulsarInvitado(Long reunionId,String username_invitado){
         Reunion reunion = buscarReunion(reunionId);
         if(!reunion.getOrganizador().getUsuario().equals(usuarioService.getAuthenticatedUser()))
             throw new AuthorizationDeniedException("No tenes permiso para eliminar esta reunion, ya que no te corresponde");
         Set<Invitado> invitados = reunion.getInvitados();
+        Invitado invitado = invitadoService.getInvitadoByUsername(username_invitado);
         invitados.remove(invitado);
         reunion.setInvitados(invitados);
         reunionRepository.save(reunion);
+        return "Se expulso al invitado " + invitado.getUsuario().getUsername() + " de la reunion";
     }
 
     public void eliminarReunion(Long id) {

@@ -4,6 +4,7 @@ import com.app.reunite.entities.Invitado;
 import com.app.reunite.entities.Usuario;
 import com.app.reunite.enums.Rol;
 import com.app.reunite.repositories.InvitadoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,9 @@ public class InvitadoService {
                 .rol(Rol.INVITADO)
                 .build();
         return invitadoRepository.save(invitado);
+    }
+
+    public Invitado getInvitadoByUsername(String username){
+        return invitadoRepository.getInvitadoByUsuarioUsername(username).orElseThrow(()->new EntityNotFoundException("Invitado no encontrado"));
     }
 }

@@ -35,6 +35,11 @@ public class ReunionController {
         return ResponseEntity.ok(reunionService.modificarReunion(id,request));
     }
 
+    @PutMapping("/expúlsar/{reunion_id}/{username_invitado}")
+    public ResponseEntity<String> expulsarInvitado(@PathVariable Long reunion_id,@PathVariable String username_invitado){
+        return ResponseEntity.ok(reunionService.expulsarInvitado(reunion_id,username_invitado));
+    }
+
     @DeleteMapping("/elimniar/{id}")
     public ResponseEntity<Void> eliminarReunion(@PathVariable Long id){
         reunionService.eliminarReunion(id);
