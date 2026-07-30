@@ -17,8 +17,8 @@ public class SolicitudController {
     private final SolicitudAmistadService solicitudAmistadService;
 
     @PostMapping("/enviar")
-    public ResponseEntity<SolicitudDTO> enviarSolicitud(@AuthenticationPrincipal Usuario usuario, @RequestBody String usernameReceptor){
-        return ResponseEntity.ok(solicitudAmistadService.enviarSolicitud(usuario.getUsername(),usernameReceptor));
+    public ResponseEntity<SolicitudDTO> enviarSolicitud(@RequestBody String usernameReceptor){
+        return ResponseEntity.ok(solicitudAmistadService.enviarSolicitud(usernameReceptor));
     }
     @DeleteMapping("/cancelar/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
@@ -26,11 +26,19 @@ public class SolicitudController {
         return ResponseEntity.noContent().build();
     }
     @GetMapping("/mis-solicitudes-recibidas")
-    public ResponseEntity<List<SolicitudDTO>> misSolicitudesRecibidas(@AuthenticationPrincipal Usuario usuario){
-        return ResponseEntity.ok(solicitudAmistadService.visualizarSolicitudesRecibidas(usuario.getUsername()));
+    public ResponseEntity<List<SolicitudDTO>> misSolicitudesRecibidas(){
+        return ResponseEntity.ok(solicitudAmistadService.visualizarSolicitudesRecibidas());
     }
     @GetMapping("/mis-solicitudes-enviadas")
-    public ResponseEntity<List<SolicitudDTO>> misSolicitudesEnviadas(@AuthenticationPrincipal Usuario usuario){
-        return ResponseEntity.ok(solicitudAmistadService.visualizarSolicitudesEnviadas(usuario.getUsername()));
+    public ResponseEntity<List<SolicitudDTO>> misSolicitudesEnviadas(){
+        return ResponseEntity.ok(solicitudAmistadService.visualizarSolicitudesEnviadas());
+    }
+    @PutMapping("/aceptar/{id}")
+    public ResponseEntity<SolicitudDTO> aceptarSolicitud(@PathVariable Long id){
+        return ResponseEntity.ok(solicitudAmistadService.aceptarSolicitud(id));
+    }
+    @PutMapping("/rechazar/{id}")
+    public ResponseEntity<SolicitudDTO> rechazarSolicitud(@PathVariable Long id){
+        return ResponseEntity.ok(solicitudAmistadService.rechazarSolicitud(id));
     }
 }

@@ -8,11 +8,13 @@ import com.app.reunite.entities.Usuario;
 import com.app.reunite.enums.Rol;
 import com.app.reunite.mapper.UsuarioMapper;
 import com.app.reunite.repositories.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,12 +39,20 @@ public class UsuarioService implements UserDetailsService {
         this.authenticationManager = authenticationManager;
     }
 
+    public String getUsername(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+    public Usuario getUserByUsername(String username){
+        return usuarioRepository.findByUsername(username).orElseThrow(()->new EntityNotFoundException("Usuario " + username + " no encontrado"));
+    }
+
     @Override
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
         return usuarioRepository.findByUsername(username)
                 .orElseThrow(()->new UsernameNotFoundException("Usuario " + username + " no enconntrado"));
     }
 
+    //este es el que se usa en el endpoint
     public UsuarioDTO findByUsername(String username){
         return UsuarioMapper.toDTO(usuarioRepository.findByUsername(username)
                 .orElseThrow(()-> new UsernameNotFoundException("Usuario " + username + " no encontrado")));
@@ -70,8 +80,7 @@ public class UsuarioService implements UserDetailsService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(),request.password())
         );
-        Usuario usuario = usuarioRepository.findByUsername(request.username())
-                .orElseThrow(()->new UsernameNotFoundException("Usuario " + request.username() + " no enconntrado"));
+        Usuario usuario = getUserByUsername(request.username());
         String token = jwtService.generateToken(usuario);
         return new LoginResponse(token);
     }

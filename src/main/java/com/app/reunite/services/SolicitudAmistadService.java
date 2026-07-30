@@ -10,6 +10,7 @@ import com.app.reunite.repositories.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +21,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SolicitudAmistadService {
     private final SolicitudAmistadRepository solicitudAmistadRepository;
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
 
     @Transactional
-    public SolicitudDTO enviarSolicitud(String usernameEmisor,String usernameReceptor){
-        Usuario emisor = usuarioRepository.findByUsername(usernameEmisor).orElseThrow(()->new UsernameNotFoundException("Usuario " + usernameReceptor + " no encontrado"));
-        Usuario receptor = usuarioRepository.findByUsername(usernameReceptor).orElseThrow(()->new UsernameNotFoundException("Usuario " + usernameReceptor + " no encontrado"));
+    public SolicitudDTO enviarSolicitud(String usernameReceptor){
+        String usernameEmisor = usuarioService.getUsername();
+        Usuario emisor = usuarioService.getUserByUsername(usernameEmisor);
+        Usuario receptor = usuarioService.getUserByUsername(usernameReceptor);
 
         SolicitudAmistad solicitud = SolicitudAmistad.builder()
                 .usuario_emisor(emisor)
@@ -49,12 +51,53 @@ public class SolicitudAmistadService {
 
     @Transactional
     public void cancelarSolicitud(Long id){
-        solicitudAmistadRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Solicitud no encontrada"));
+        solicitudAmistadRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Solicitud no encontrada"));
 
         solicitudAmistadRepository.deleteById(id);
     }
 
-    public List<SolicitudDTO> visualizarSolicitudesRecibidas(String username){
+    @Transactional
+    public SolicitudDTO aceptarSolicitud(Long id){
+        String username = usuarioService.getUsername();
+        Usuario usuario = usuarioService.getUserByUsername(username);
+
+        SolicitudAmistad solicitud = solicitudAmistadRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Solicitud no encontrada"));
+
+        if(!solicitud.getUsuario_receptor().equals(usuario))
+            throw new IllegalArgumentException("No tenes permiso de aceptar esta solicitud, debido a que no es una solicitud que te corresponda");
+
+        solicitud.setEstado(Estado_Solicitud.ACEPTADA);
+
+        solicitud.setFecha_respuesta(LocalDateTime.now());
+
+        SolicitudAmistad solicitudAmistad = solicitudAmistadRepository.save(solicitud);
+
+        return SolicitudMapper.toDTO(solicitudAmistad);
+    }
+    @Transactional
+    public SolicitudDTO rechazarSolicitud(Long id){
+        String username = usuarioService.getUsername();
+        Usuario usuario = usuarioService.getUserByUsername(username);
+
+        SolicitudAmistad solicitud = solicitudAmistadRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Solicitud no encontrada"));
+
+        if(!solicitud.getUsuario_receptor().equals(usuario))
+            throw new IllegalArgumentException("No tenes permiso de rechazar esta solicitud, debido a que no es una solicitud que te corresponda");
+
+        solicitud.setEstado(Estado_Solicitud.RECHAZADA);
+
+        solicitud.setFecha_respuesta(LocalDateTime.now());
+
+        SolicitudAmistad solicitudAmistad = solicitudAmistadRepository.save(solicitud);
+        return SolicitudMapper.toDTO(solicitudAmistad);
+    }
+
+
+    public List<SolicitudDTO> visualizarSolicitudesRecibidas(){
+        String username = usuarioService.getUsername();
         return solicitudAmistadRepository.findAll()
                 .stream().filter(solicitud -> solicitud.getUsuario_receptor()
                         .getUsername()
@@ -62,7 +105,8 @@ public class SolicitudAmistadService {
                 .map(SolicitudMapper::toDTO)
                 .toList();
     }
-    public List<SolicitudDTO> visualizarSolicitudesEnviadas(String username){
+    public List<SolicitudDTO> visualizarSolicitudesEnviadas(){
+        String username = usuarioService.getUsername();
         return solicitudAmistadRepository.findAll()
                 .stream().filter(solicitud -> solicitud.getUsuario_emisor()
                         .getUsername()

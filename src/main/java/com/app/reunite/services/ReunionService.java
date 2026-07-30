@@ -26,7 +26,10 @@ public class ReunionService {
     private final ReunionRepository reunionRepository;
     private final UsuarioService usuarioService;
 
-    public ReunionDTO crearReunion(ReunionRequest request, Usuario usuario){
+    @Transactional
+    public ReunionDTO crearReunion(ReunionRequest request){
+        String username = usuarioService.getUsername();
+        Usuario usuario = usuarioService.getUserByUsername(username);
         if(request.fechaHora().isBefore(LocalDateTime.now()))
             throw new IllegalArgumentException("La fecha no puede ser anterior a la actual");
         Reunion reunion = Reunion.builder()
@@ -55,7 +58,8 @@ public class ReunionService {
         return reunionRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Reunion no encontrada"));
     }
 
-    public List<ReunionDTO> visualizarMisReuniones(String username){
+    public List<ReunionDTO> visualizarMisReuniones(){
+        String username = usuarioService.getUsername();
         return reunionRepository.findAll()
                 .stream()
                 .filter(reunion -> reunion.getOrganizador()
@@ -66,7 +70,8 @@ public class ReunionService {
                 .toList();
     }
 
-    public List<ReunionDTO> visualizarReunionesParticipo(String username){
+    public List<ReunionDTO> visualizarReunionesParticipo(){
+        String username = usuarioService.getUsername();
         return reunionRepository.findAll()
                 .stream()
                 .filter(

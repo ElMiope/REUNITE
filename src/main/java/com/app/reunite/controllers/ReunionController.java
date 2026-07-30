@@ -19,18 +19,18 @@ public class ReunionController {
     private final ReunionService reunionService;
 
     @PostMapping("/crear")
-    public ResponseEntity<ReunionDTO> crear(@AuthenticationPrincipal Usuario usuario, @RequestBody ReunionRequest request){
-        return ResponseEntity.ok(reunionService.crearReunion(request,usuario));
+    public ResponseEntity<ReunionDTO> crear(@RequestBody ReunionRequest request){
+        return ResponseEntity.ok(reunionService.crearReunion(request));
     }
 
     @GetMapping("/visualizar-mis-reuniones")
-    public ResponseEntity<List<ReunionDTO>> visualizarMisReuniones(@AuthenticationPrincipal Usuario usuario){
-        return ResponseEntity.ok(reunionService.visualizarMisReuniones(usuario.getUsername()));
+    public ResponseEntity<List<ReunionDTO>> visualizarMisReuniones(){
+        return ResponseEntity.ok(reunionService.visualizarMisReuniones());
     }
 
     @GetMapping("/visualizar-reuniones-participo")
-    public ResponseEntity<List<ReunionDTO>> visualizarReunionesParticipo(@AuthenticationPrincipal Usuario usuario){
-        return ResponseEntity.ok(reunionService.visualizarReunionesParticipo(usuario.getUsername()));
+    public ResponseEntity<List<ReunionDTO>> visualizarReunionesParticipo(){
+        return ResponseEntity.ok(reunionService.visualizarReunionesParticipo());
     }
 
 
