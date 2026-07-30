@@ -10,6 +10,7 @@ import com.app.reunite.repositories.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,7 @@ public class SolicitudAmistadService {
 
     @Transactional
     public SolicitudDTO enviarSolicitud(String usernameReceptor){
-        String usernameEmisor = usuarioService.getUsername();
-        Usuario emisor = usuarioService.getUserByUsername(usernameEmisor);
+        Usuario emisor = usuarioService.getAuthenticatedUser();
         Usuario receptor = usuarioService.getUserByUsername(usernameReceptor);
 
         SolicitudAmistad solicitud = SolicitudAmistad.builder()
@@ -59,14 +59,13 @@ public class SolicitudAmistadService {
 
     @Transactional
     public SolicitudDTO aceptarSolicitud(Long id){
-        String username = usuarioService.getUsername();
-        Usuario usuario = usuarioService.getUserByUsername(username);
+        Usuario usuario = usuarioService.getAuthenticatedUser();
 
         SolicitudAmistad solicitud = solicitudAmistadRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("Solicitud no encontrada"));
 
         if(!solicitud.getUsuario_receptor().equals(usuario))
-            throw new IllegalArgumentException("No tenes permiso de aceptar esta solicitud, debido a que no es una solicitud que te corresponda");
+            throw new AuthorizationDeniedException("No tenes permiso de aceptar esta solicitud, debido a que no es una solicitud que te corresponda");
 
         solicitud.setEstado(Estado_Solicitud.ACEPTADA);
 
@@ -78,14 +77,13 @@ public class SolicitudAmistadService {
     }
     @Transactional
     public SolicitudDTO rechazarSolicitud(Long id){
-        String username = usuarioService.getUsername();
-        Usuario usuario = usuarioService.getUserByUsername(username);
+        Usuario usuario = usuarioService.getAuthenticatedUser();
 
         SolicitudAmistad solicitud = solicitudAmistadRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("Solicitud no encontrada"));
 
         if(!solicitud.getUsuario_receptor().equals(usuario))
-            throw new IllegalArgumentException("No tenes permiso de rechazar esta solicitud, debido a que no es una solicitud que te corresponda");
+            throw new AuthorizationDeniedException("No tenes permiso de rechazar esta solicitud, debido a que no es una solicitud que te corresponda");
 
         solicitud.setEstado(Estado_Solicitud.RECHAZADA);
 
@@ -97,20 +95,16 @@ public class SolicitudAmistadService {
 
 
     public List<SolicitudDTO> visualizarSolicitudesRecibidas(){
-        String username = usuarioService.getUsername();
         return solicitudAmistadRepository.findAll()
                 .stream().filter(solicitud -> solicitud.getUsuario_receptor()
-                        .getUsername()
-                        .equalsIgnoreCase(username))
+                        .equals(usuarioService.getAuthenticatedUser()))
                 .map(SolicitudMapper::toDTO)
                 .toList();
     }
     public List<SolicitudDTO> visualizarSolicitudesEnviadas(){
-        String username = usuarioService.getUsername();
         return solicitudAmistadRepository.findAll()
                 .stream().filter(solicitud -> solicitud.getUsuario_emisor()
-                        .getUsername()
-                        .equalsIgnoreCase(username))
+                        .equals(usuarioService.getAuthenticatedUser()))
                 .map(SolicitudMapper::toDTO)
                 .toList();
     }

@@ -39,11 +39,16 @@ public class UsuarioService implements UserDetailsService {
         this.authenticationManager = authenticationManager;
     }
 
-    public String getUsername(){
+    private String getUsername(){
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
     public Usuario getUserByUsername(String username){
         return usuarioRepository.findByUsername(username).orElseThrow(()->new EntityNotFoundException("Usuario " + username + " no encontrado"));
+    }
+
+    public Usuario getAuthenticatedUser(){
+        String username = getUsername();
+        return getUserByUsername(username);
     }
 
     @Override

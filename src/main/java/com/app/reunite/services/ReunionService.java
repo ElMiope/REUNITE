@@ -28,8 +28,7 @@ public class ReunionService {
 
     @Transactional
     public ReunionDTO crearReunion(ReunionRequest request){
-        String username = usuarioService.getUsername();
-        Usuario usuario = usuarioService.getUserByUsername(username);
+        Usuario usuario = usuarioService.getAuthenticatedUser();
         if(request.fechaHora().isBefore(LocalDateTime.now()))
             throw new IllegalArgumentException("La fecha no puede ser anterior a la actual");
         Reunion reunion = Reunion.builder()
@@ -67,33 +66,27 @@ public class ReunionService {
         return ReunionMapper.toDTO(aux);
     }
 
-    private Reunion buscarReunion(Long id){
+    public Reunion buscarReunion(Long id){
         return reunionRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Reunion no encontrada"));
     }
 
     public List<ReunionDTO> visualizarMisReuniones(){
-        String username = usuarioService.getUsername();
         return reunionRepository.findAll()
                 .stream()
-                .filter(reunion -> reunion.getOrganizador()
-                        .getUsuario()
-                        .getUsername()
-                        .equalsIgnoreCase(username))
+                .filter(reunion -> reunion.getOrganizador().getUsuario()
+                        .equals(usuarioService.getAuthenticatedUser()))
                 .map(ReunionMapper::toDTO)
                 .toList();
     }
 
     public List<ReunionDTO> visualizarReunionesParticipo(){
-        String username = usuarioService.getUsername();
         return reunionRepository.findAll()
                 .stream()
                 .filter(
                         reunion -> reunion
                                 .getInvitados()
-                                .stream().filter(invitado -> invitado
-                                        .getUsuario()
-                                        .getUsername()
-                                        .equalsIgnoreCase(username))
+                                .stream().filter(invitado -> invitado.getUsuario()
+                                        .equals(usuarioService.getAuthenticatedUser()))
                                 .isParallel()
                 )
                 .map(ReunionMapper::toDTO)
