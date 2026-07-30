@@ -2,12 +2,9 @@ package com.app.reunite.controllers;
 
 import com.app.reunite.entities.DTOs.ReunionDTO;
 import com.app.reunite.entities.DTOs.ReunionRequest;
-import com.app.reunite.entities.Reunion;
-import com.app.reunite.entities.Usuario;
 import com.app.reunite.services.ReunionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,5 +30,8 @@ public class ReunionController {
         return ResponseEntity.ok(reunionService.visualizarReunionesParticipo());
     }
 
-
+    @PutMapping("/modificar/{id}")
+    public ResponseEntity<ReunionDTO> modificarReunion(@PathVariable Long id,@RequestBody ReunionRequest request){
+        return ResponseEntity.ok(reunionService.modificarReunion(id,request));
+    }
 }

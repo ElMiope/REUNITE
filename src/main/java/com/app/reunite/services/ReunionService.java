@@ -54,6 +54,19 @@ public class ReunionService {
         );
     }
 
+    @Transactional
+    public ReunionDTO modificarReunion(Long id, ReunionRequest request){
+        Reunion reunion = buscarReunion(id);
+        if(request.fechaHora().isBefore(LocalDateTime.now()))
+            throw new IllegalArgumentException("La fecha/hora no puede ser anterior a la fecha/hora actual");
+        reunion.setNombre(request.nombre());
+        reunion.setDescripcion(request.descripcion());
+        reunion.setUbicacion(request.ubicacion());
+        reunion.setFecha_hora(request.fechaHora());
+        Reunion aux = reunionRepository.save(reunion);
+        return ReunionMapper.toDTO(aux);
+    }
+
     private Reunion buscarReunion(Long id){
         return reunionRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Reunion no encontrada"));
     }
