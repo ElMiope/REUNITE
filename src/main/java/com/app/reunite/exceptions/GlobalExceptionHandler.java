@@ -18,4 +18,14 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR
                 ));
     }
+    @ExceptionHandler(AmistadException.class)
+    public ResponseEntity<ErrorResponse> amistadExceptionHandler(AmistadException ex){
+        return ResponseEntity.ok(new ErrorResponse(
+                "Bad Request",
+                ex.getMessage(),
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST
+                ));
+    }
+
 }
