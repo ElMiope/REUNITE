@@ -16,12 +16,12 @@ import java.util.Set;
 public class Reunion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name="reunion_id")
+    @Column(name="reunion_id")
     private Long id;
     private String nombre;
     private String descripcion;
     private String ubicacion;
-    private LocalDateTime fecha_hora;
+    private LocalDateTime fechaHora;
     @ManyToOne
     @JoinColumn(name="organizador_id")
     private Organizador organizador;

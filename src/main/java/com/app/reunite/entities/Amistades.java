@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class Amistades {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name="amistad_id")
+    @Column(name="amistad_id")
     private Long id;
     @ManyToOne
     @JoinColumn(name = "usuario_1_id")

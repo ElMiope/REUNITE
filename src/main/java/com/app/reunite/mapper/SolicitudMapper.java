@@ -12,33 +12,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class SolicitudMapper {
 
-    @Autowired
-    private static UsuarioRepository usuarioRepository;
-
     public static SolicitudDTO toDTO(SolicitudAmistad solicitudAmistad){
         return new SolicitudDTO(
                 solicitudAmistad.getId(),
-                solicitudAmistad.getUsuario_emisor().getUsername(),
-                solicitudAmistad.getUsuario_receptor().getUsername(),
+                solicitudAmistad.getUsuarioEmisor().getUsername(),
+                solicitudAmistad.getUsuarioReceptor().getUsername(),
                 solicitudAmistad.getEstado(),
-                solicitudAmistad.getFecha_envio(),
-                solicitudAmistad.getFecha_respuesta()
+                solicitudAmistad.getFechaEnvio(),
+                solicitudAmistad.getFechaRespuesta()
         );
-    }
-    public static SolicitudAmistad toEntity(SolicitudDTO solicitudDTO){
-        Usuario emisor = usuarioRepository.findByUsername(solicitudDTO.usernameEmisor())
-                .orElseThrow(()->new UsernameNotFoundException("Usuario " + solicitudDTO.usernameEmisor() + " no encontrado"));
-        Usuario receptor = usuarioRepository.findByUsername(solicitudDTO.usernameReceptor())
-                .orElseThrow(()->new UsernameNotFoundException("Usuario " + solicitudDTO.usernameEmisor() + " no encontrado"));
-
-        return SolicitudAmistad.builder()
-                .id(solicitudDTO.id())
-                .usuario_emisor(emisor)
-                .usuario_receptor(receptor)
-                .estado(solicitudDTO.estado())
-                .fecha_envio(solicitudDTO.fecha_envio())
-                .fecha_respuesta(solicitudDTO.fecha_respuesta())
-                .build();
     }
 
 }

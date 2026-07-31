@@ -10,33 +10,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ReunionMapper {
-    @Autowired
-    private static OrganizadorRepository organizadorRepository;
-
     public static ReunionDTO toDTO(Reunion reunion){
         return new ReunionDTO(
                 reunion.getId(),
                 reunion.getNombre(),
                 reunion.getDescripcion(),
                 reunion.getUbicacion(),
-                reunion.getFecha_hora(),
+                reunion.getFechaHora(),
                 reunion.getOrganizador().getId(),
                 reunion.getInvitados()
         );
-    }
-    public static Reunion toEntity(ReunionDTO reunionDTO){
-
-        Organizador org = organizadorRepository.findById(reunionDTO.organizadorId())
-                .orElseThrow(()->new EntityNotFoundException("Organizador no encontrado"));
-
-        return Reunion.builder()
-                .id(reunionDTO.id())
-                .nombre(reunionDTO.nombre())
-                .descripcion(reunionDTO.descripcion())
-                .ubicacion(reunionDTO.ubicacion())
-                .fecha_hora(reunionDTO.fechaHora())
-                .organizador(org)
-                .invitados(reunionDTO.invitados())
-                .build();
     }
 }

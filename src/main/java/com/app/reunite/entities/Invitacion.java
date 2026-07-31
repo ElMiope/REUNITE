@@ -17,18 +17,18 @@ import java.time.LocalDateTime;
 public class Invitacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name="invitacion_id")
+    @Column(name="invitacion_id")
     private Long id;
     @ManyToOne
     @JoinColumn(name = "emisor_id")
-    private Usuario usuario_emisor;
+    private Usuario usuarioEmisor;
     @ManyToOne
     @JoinColumn(name = "receptor_id")
-    private Usuario usuario_receptor;
+    private Usuario usuarioReceptor;
     @ManyToOne
     @JoinColumn(name = "reunion_id")
     private Reunion reunion;
     private Estado_Solicitud estado;
-    private LocalDateTime fecha_envio;
-    private LocalDateTime fecha_respuesta;
+    private LocalDateTime fechaEnvio;
+    private LocalDateTime fechaRespuesta;
 }

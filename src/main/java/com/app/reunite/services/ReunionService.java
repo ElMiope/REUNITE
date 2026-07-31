@@ -37,22 +37,14 @@ public class ReunionService {
                         .nombre(request.nombre())
                         .descripcion(request.descripcion())
                         .ubicacion(request.ubicacion())
-                        .fecha_hora(request.fechaHora())
+                        .fechaHora(request.fechaHora())
                         .organizador(Organizador.builder().usuario(usuario).rol(Rol.ORGANIZADOR).build())
                 .invitados(new HashSet<>())
                 .build();
 
         reunion = reunionRepository.save(reunion);
 
-        return new ReunionDTO(
-                reunion.getId(),
-                reunion.getNombre(),
-                reunion.getDescripcion(),
-                reunion.getUbicacion(),
-                reunion.getFecha_hora(),
-                reunion.getOrganizador().getId(),
-                reunion.getInvitados()
-        );
+        return ReunionMapper.toDTO(reunion);
     }
 
     @Transactional
@@ -65,7 +57,7 @@ public class ReunionService {
         reunion.setNombre(request.nombre());
         reunion.setDescripcion(request.descripcion());
         reunion.setUbicacion(request.ubicacion());
-        reunion.setFecha_hora(request.fechaHora());
+        reunion.setFechaHora(request.fechaHora());
         Reunion aux = reunionRepository.save(reunion);
         return ReunionMapper.toDTO(aux);
     }

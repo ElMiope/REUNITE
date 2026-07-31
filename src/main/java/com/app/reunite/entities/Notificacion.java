@@ -15,7 +15,7 @@ import lombok.*;
 public class Notificacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name="notificacion_id")
+    @Column(name="notificacion_id")
     private Long id;
     @ManyToOne
     @JoinColumn(name = "usuario_id")

@@ -14,7 +14,7 @@ import lombok.*;
 public class Organizador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name="organizador_id")
+    @Column(name="organizador_id")
     private Long id;
     @OneToOne
     @JoinColumn(name="usuario_id")

@@ -14,11 +14,11 @@ import lombok.*;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name="item_id")
+    @Column(name="item_id")
     private Long id;
     private String nombre;
     private String descripcion;
     @ManyToOne
     @JoinColumn(name = "usuario_asignado_id")
-    private Usuario usuario_asignado;
+    private Usuario usuarioAsignado;
 }

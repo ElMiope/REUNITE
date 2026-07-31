@@ -17,15 +17,15 @@ import java.time.LocalDateTime;
 public class SolicitudAmistad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name="solicitud_id")
+    @Column(name="solicitud_id")
     private Long id;
     @ManyToOne
     @JoinColumn(name = "emisor_id")
-    private Usuario usuario_emisor;
+    private Usuario usuarioEmisor;
     @ManyToOne
     @JoinColumn(name = "receptor_id")
-    private Usuario usuario_receptor;
+    private Usuario usuarioReceptor;
     private Estado_Solicitud estado;
-    private LocalDateTime fecha_envio;
-    private LocalDateTime fecha_respuesta;
+    private LocalDateTime fechaEnvio;
+    private LocalDateTime fechaRespuesta;
 }
